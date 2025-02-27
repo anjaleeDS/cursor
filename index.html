@@ -174,6 +174,136 @@
             border-radius: 15px;
             margin: 20px;
         }
+
+        .category-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px;
+            border-radius: 20px;
+            margin: 20px auto;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            max-width: 600px;
+            text-align: left;
+        }
+
+        .category-title {
+            color: #ff69b4;
+            margin-bottom: 20px;
+            font-size: 24px;
+            text-align: center;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            padding: 10px;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 12px 15px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Category-specific colors */
+        .checkbox-label.personality { background: linear-gradient(45deg, #ff69b4, #ff9ecd); }
+        .checkbox-label.impact { background: linear-gradient(45deg, #4CAF50, #8BC34A); }
+        .checkbox-label.skills { background: linear-gradient(45deg, #2196F3, #03A9F4); }
+        .checkbox-label.growth { background: linear-gradient(45deg, #9C27B0, #E91E63); }
+        .checkbox-label.energy { background: linear-gradient(45deg, #FF9800, #FFC107); }
+        .checkbox-label.intelligence { background: linear-gradient(45deg, #3F51B5, #2196F3); }
+
+        .checkbox-label {
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .checkbox-label:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        /* Hide original checkbox */
+        .checkbox-label input[type="checkbox"] {
+            display: none;
+        }
+
+        /* Custom checkbox */
+        .checkbox-custom {
+            width: 24px;
+            height: 24px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 6px;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        /* Checkbox icon */
+        .checkbox-icon {
+            font-size: 16px;
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.3s ease;
+        }
+
+        /* Checked state */
+        .checkbox-label input[type="checkbox"]:checked + .checkbox-custom {
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .checkbox-label input[type="checkbox"]:checked + .checkbox-custom .checkbox-icon {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Select All button */
+        #selectAllBtn {
+            background: linear-gradient(45deg, #ff69b4, #ff9ecd);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin: 10px auto 20px;
+            display: block;
+            font-size: 16px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(255, 105, 180, 0.3);
+        }
+
+        #selectAllBtn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 105, 180, 0.4);
+        }
+
+        #selectAllBtn:active {
+            transform: translateY(0);
+        }
+
+        /* Add some animation for checkbox selection */
+        @keyframes checkPop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .checkbox-label input[type="checkbox"]:checked + .checkbox-custom {
+            animation: checkPop 0.3s ease;
+        }
     </style>
 </head>
 <body>
@@ -189,6 +319,55 @@
             <div class="center"></div>
         </div>
         <div class="stem"></div>
+    </div>
+
+    <div class="category-container">
+        <div class="category-title">Choose Your Compliment Types ✨</div>
+        <button id="selectAllBtn">Select All</button>
+        <div class="checkbox-group">
+            <label class="checkbox-label personality">
+                <input type="checkbox" value="personality" checked>
+                <span class="checkbox-custom">
+                    <span class="checkbox-icon">💫</span>
+                </span>
+                Personality & Character
+            </label>
+            <label class="checkbox-label impact">
+                <input type="checkbox" value="impact" checked>
+                <span class="checkbox-custom">
+                    <span class="checkbox-icon">🤝</span>
+                </span>
+                Impact on Others
+            </label>
+            <label class="checkbox-label skills">
+                <input type="checkbox" value="skills" checked>
+                <span class="checkbox-custom">
+                    <span class="checkbox-icon">🎯</span>
+                </span>
+                Skills & Abilities
+            </label>
+            <label class="checkbox-label growth">
+                <input type="checkbox" value="growth" checked>
+                <span class="checkbox-custom">
+                    <span class="checkbox-icon">🌱</span>
+                </span>
+                Growth & Potential
+            </label>
+            <label class="checkbox-label energy">
+                <input type="checkbox" value="energy" checked>
+                <span class="checkbox-custom">
+                    <span class="checkbox-icon">✨</span>
+                </span>
+                Positive Energy
+            </label>
+            <label class="checkbox-label intelligence">
+                <input type="checkbox" value="intelligence" checked>
+                <span class="checkbox-custom">
+                    <span class="checkbox-icon">🧠</span>
+                </span>
+                Intelligence & Wisdom
+            </label>
+        </div>
     </div>
 
     <script>
