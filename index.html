@@ -129,6 +129,51 @@
                 opacity: 1;
             }
         }
+
+        /* Theme styles for each category */
+        .theme-personality {
+            background: linear-gradient(45deg, #ff69b4, #ff9ecd);
+            color: #fff;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .theme-impact {
+            background: linear-gradient(45deg, #4CAF50, #8BC34A);
+            color: #fff;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .theme-skills {
+            background: linear-gradient(45deg, #2196F3, #03A9F4);
+            color: #fff;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .theme-growth {
+            background: linear-gradient(45deg, #9C27B0, #E91E63);
+            color: #fff;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .theme-energy {
+            background: linear-gradient(45deg, #FF9800, #FFC107);
+            color: #fff;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .theme-intelligence {
+            background: linear-gradient(45deg, #3F51B5, #2196F3);
+            color: #fff;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        }
+
+        /* Add animation for theme transition */
+        .compliment-container {
+            transition: all 0.5s ease;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px;
+        }
     </style>
 </head>
 <body>
@@ -147,18 +192,140 @@
     </div>
 
     <script>
-        const compliments = [
-            "Your positive energy is contagious! 🌟",
-            "You make the world a better place just by being in it! 🌍",
-            "Your potential is limitless! 🚀",
-            "You have a beautiful heart! ❤️",
-            "You're making a difference! 🌈",
-            "Your smile lights up the room! ✨",
-            "You're stronger than you know! 💪",
-            "You inspire others around you! 🌠",
-            "Your kindness matters! 🎁",
-            "You're capable of amazing things! 🎯"
-        ];
+        const complimentsByCategory = {
+            personality: [
+                "Your resilience is admirable! 💪",
+                "Your authenticity is refreshing! 🌟",
+                "You have such a beautiful soul! ✨",
+                "Your enthusiasm is contagious! 🎉",
+                "You're remarkably thoughtful! 💭",
+                "Your courage is inspiring! 🦁",
+                "You're incredibly resourceful! 🔧",
+                "Your creativity knows no bounds! 🎨",
+                "You're wonderfully unique! 🌈",
+                "Your determination is remarkable! 🎯",
+                "Your gentle spirit touches hearts! 🕊️",
+                "Your honesty is refreshing! 💫",
+                "Your patience is admirable! ⌛",
+                "Your empathy knows no bounds! 💝",
+                "Your sense of humor is delightful! 😊",
+                "Your compassion changes lives! 🤗",
+                "Your optimism is uplifting! 🌅",
+                "Your authenticity inspires others! ⭐",
+                "Your emotional intelligence is remarkable! 💫",
+                "Your adaptability is impressive! 🦋"
+            ],
+            impact: [
+                "You make people feel heard and valued! 👂",
+                "Your presence makes any room brighter! 💫",
+                "You inspire people to be better! 🌱",
+                "Your kindness ripples out to others! 💝",
+                "You're a natural leader! 👑",
+                "You bring out the best in everyone! 🌟",
+                "Your energy is absolutely infectious! ⚡",
+                "You're a wonderful friend! 🤝",
+                "Your support means the world to others! 🌍",
+                "You make the world a better place! 🌎",
+                "Your influence creates positive change! 🌊",
+                "You're a catalyst for growth in others! 🌱",
+                "Your mentorship is invaluable! 📚",
+                "You create safe spaces for everyone! 🏠",
+                "Your leadership inspires confidence! 🎯",
+                "You're a cornerstone of your community! 🏛️",
+                "Your advocacy makes a difference! 📢",
+                "You unite people effortlessly! 🤝",
+                "Your presence brings peace! 🕊️",
+                "You're a beacon of hope! 🌟"
+            ],
+            skills: [
+                "Your problem-solving abilities are exceptional! 🧩",
+                "Your attention to detail is remarkable! 🔍",
+                "You're incredibly talented! 🎭",
+                "Your work ethic is inspiring! 📚",
+                "You're amazingly capable! 💫",
+                "Your ideas are brilliant! 💡",
+                "You're a natural at this! 🎯",
+                "Your dedication shows in everything you do! ⭐",
+                "You make complex tasks look easy! 🎨",
+                "Your skills are truly impressive! 🏆",
+                "Your technical expertise is outstanding! 💻",
+                "Your artistic vision is unique! 🎨",
+                "Your writing skills are powerful! ✍️",
+                "Your analytical thinking is sharp! 🔬",
+                "Your organizational skills are amazing! 📋",
+                "Your communication style is effective! 🗣️",
+                "Your leadership abilities shine! 👥",
+                "Your creative solutions are innovative! 💡",
+                "Your project management is stellar! 📊",
+                "Your networking abilities are remarkable! 🤝"
+            ],
+            growth: [
+                "You're growing stronger every day! 🌱",
+                "Your potential is limitless! 🚀",
+                "You're on the right path! 🛤️",
+                "You handle challenges with grace! 🎭",
+                "Your progress is inspiring! 📈",
+                "You're becoming more amazing every day! 🌅",
+                "Your future is so bright! 🌟",
+                "You're constantly evolving! 🦋",
+                "You're making incredible progress! 🎯",
+                "Your growth is remarkable! 🌳",
+                "Your self-improvement journey inspires! 🗺️",
+                "You embrace change beautifully! 🔄",
+                "Your resilience keeps growing! 💪",
+                "You learn from every experience! 📚",
+                "Your adaptability is impressive! 🌊",
+                "You're mastering new skills! 🎯",
+                "Your personal growth is evident! 📈",
+                "You're breaking your own records! 🏆",
+                "You're exceeding expectations! ⭐",
+                "Your transformation is beautiful! 🦋"
+            ],
+            energy: [
+                "Your smile brightens everyone's day! 😊",
+                "Your laugh is music to others' ears! 🎵",
+                "Your positive attitude is refreshing! 🌞",
+                "You radiate good vibes! ✨",
+                "Your enthusiasm is contagious! 🎉",
+                "You're a ray of sunshine! ☀️",
+                "Your spirit is indomitable! 🔥",
+                "You're absolutely delightful! 🌸",
+                "Your energy is magnetic! ⚡",
+                "You're pure joy to be around! 🎈",
+                "Your zest for life is contagious! 🌟",
+                "Your cheerfulness lifts spirits! 🎪",
+                "Your optimism is refreshing! 🌅",
+                "Your passion is inspiring! 🔥",
+                "Your excitement is infectious! 🎉",
+                "Your vitality is remarkable! ⚡",
+                "Your presence energizes others! 💫",
+                "Your joy spreads happiness! 🌈",
+                "Your enthusiasm motivates! 🚀",
+                "Your spirit is uplifting! 🎈"
+            ],
+            intelligence: [
+                "Your insight is remarkable! 🔮",
+                "Your wisdom is beyond your years! 📚",
+                "Your perspective is enlightening! 💡",
+                "You ask great questions! 🤔",
+                "Your curiosity is inspiring! 🔍",
+                "You're incredibly perceptive! 👁️",
+                "Your mind is fascinating! 🧠",
+                "You're brilliantly clever! ✨",
+                "Your understanding runs deep! 🌊",
+                "You're intellectually curious! 📖",
+                "Your analytical skills are impressive! 🔬",
+                "Your problem-solving is innovative! 🧩",
+                "Your knowledge is extensive! 📚",
+                "Your learning capacity is remarkable! 🎓",
+                "Your intellectual curiosity is inspiring! 🔍",
+                "Your critical thinking is sharp! 💭",
+                "Your mental agility is impressive! ⚡",
+                "Your reasoning is sophisticated! 🎯",
+                "Your cognitive abilities shine! 💫",
+                "Your intellectual depth is profound! 🌊"
+            ]
+        };
 
         const button = document.getElementById('complimentButton');
         const textDisplay = document.getElementById('complimentText');
@@ -167,11 +334,16 @@
         function getRandomCompliment() {
             let newIndex;
             do {
-                newIndex = Math.floor(Math.random() * compliments.length);
-            } while (newIndex === lastIndex && compliments.length > 1);
+                newIndex = Math.floor(Math.random() * complimentsByCategory.personality.length);
+            } while (newIndex === lastIndex && complimentsByCategory.personality.length > 1);
             
             lastIndex = newIndex;
-            return compliments[newIndex];
+
+            // Add theme change
+            const category = Object.keys(complimentsByCategory)[Math.floor(Math.random() * Object.keys(complimentsByCategory).length)];
+            document.body.className = `theme-${category}`;
+            
+            return complimentsByCategory.personality[newIndex];
         }
 
         function createBalloon() {
@@ -203,6 +375,9 @@
 
         // Add fade transition
         textDisplay.style.transition = 'opacity 0.2s ease-in-out';
+
+        // Add theme transition
+        textDisplay.className = 'compliment-container';
     </script>
 </body>
 </html> 
