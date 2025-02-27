@@ -12,40 +12,66 @@
             margin: 0;
             font-family: Arial, sans-serif;
             background-color: #f0f8ff;
+            padding: 20px;
+        }
+
+        #complimentButton {
+            padding: 25px 50px;
+            font-size: 28px;
+            background: linear-gradient(45deg, #ff69b4, #ff9ecd);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        #complimentButton:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+        }
+
+        #complimentText {
+            margin: 30px 0;
+            font-size: 24px;
+            color: #4a4a4a;
+            text-align: center;
+            max-width: 600px;
+            min-height: 80px;
+            padding: 20px;
         }
 
         .category-container {
             background: rgba(255, 255, 255, 0.95);
-            padding: 25px;
-            border-radius: 20px;
-            margin: 20px auto;
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            max-width: 600px;
-            text-align: left;
+            width: 100%;
+            max-width: 500px;
         }
 
         .category-title {
             color: #ff69b4;
-            margin-bottom: 20px;
-            font-size: 24px;
+            margin-bottom: 15px;
+            font-size: 18px;
             text-align: center;
-            font-weight: bold;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
 
         .checkbox-group {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
 
         .checkbox-label {
             display: flex;
             align-items: center;
             cursor: pointer;
-            padding: 12px 15px;
-            border-radius: 12px;
+            padding: 10px 15px;
+            border-radius: 10px;
             transition: all 0.3s ease;
             font-weight: 500;
             color: white;
@@ -65,11 +91,11 @@
         }
 
         .checkbox-custom {
-            width: 24px;
-            height: 24px;
+            width: 20px;
+            height: 20px;
             background: rgba(255, 255, 255, 0.3);
-            border-radius: 6px;
-            margin-right: 12px;
+            border-radius: 5px;
+            margin-right: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -77,7 +103,7 @@
         }
 
         .checkbox-icon {
-            font-size: 16px;
+            font-size: 14px;
             opacity: 0;
             transform: scale(0);
             transition: all 0.3s ease;
@@ -95,51 +121,14 @@
             opacity: 1;
             transform: scale(1);
         }
-
-        #selectAllBtn {
-            background: linear-gradient(45deg, #ff69b4, #ff9ecd);
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 25px;
-            cursor: pointer;
-            margin: 10px auto 20px;
-            display: block;
-            font-size: 16px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(255, 105, 180, 0.3);
-        }
-
-        #complimentButton {
-            padding: 15px 30px;
-            font-size: 20px;
-            background-color: #ff69b4;
-            color: white;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: transform 0.2s;
-            margin: 20px 0;
-        }
-
-        #complimentText {
-            margin-top: 30px;
-            font-size: 24px;
-            color: #4a4a4a;
-            text-align: center;
-            max-width: 600px;
-            min-height: 80px;
-            padding: 20px;
-        }
     </style>
 </head>
 <body>
+    <button id="complimentButton">Compliment Me!</button>
+    <div id="complimentText"></div>
+
     <div class="category-container">
-        <div class="category-title">Choose Your Compliment Types ✨</div>
-        <button id="selectAllBtn">Select All</button>
+        <div class="category-title">Choose compliment types:</div>
         <div class="checkbox-group">
             <label class="checkbox-label personality">
                 <input type="checkbox" value="personality" checked>
@@ -185,9 +174,6 @@
             </label>
         </div>
     </div>
-
-    <button id="complimentButton">Compliment Me!</button>
-    <div id="complimentText"></div>
 
     <script>
         const complimentsByCategory = {
@@ -327,8 +313,6 @@
 
         const button = document.getElementById('complimentButton');
         const textDisplay = document.getElementById('complimentText');
-        const selectAllBtn = document.getElementById('selectAllBtn');
-        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
         let lastIndex = -1;
 
         function getRandomCompliment() {
@@ -339,29 +323,22 @@
                 return "Please select at least one category! 🎯";
             }
 
-            const availableCompliments = checkedCategories.flatMap(category => 
-                complimentsByCategory[category]
-            );
-
+            // Pick a random category from the selected ones
+            const randomCategory = checkedCategories[Math.floor(Math.random() * checkedCategories.length)];
+            const categoryCompliments = complimentsByCategory[randomCategory];
+            
+            // Pick a random compliment from the chosen category
             let newIndex;
             do {
-                newIndex = Math.floor(Math.random() * availableCompliments.length);
-            } while (newIndex === lastIndex && availableCompliments.length > 1);
+                newIndex = Math.floor(Math.random() * categoryCompliments.length);
+            } while (newIndex === lastIndex && categoryCompliments.length > 1);
             
             lastIndex = newIndex;
-            return availableCompliments[newIndex];
+            return categoryCompliments[newIndex];
         }
 
         button.addEventListener('click', () => {
             textDisplay.textContent = getRandomCompliment();
-        });
-
-        selectAllBtn.addEventListener('click', () => {
-            const areAllChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
-            checkboxes.forEach(checkbox => {
-                checkbox.checked = !areAllChecked;
-            });
-            selectAllBtn.textContent = areAllChecked ? "Select All" : "Deselect All";
         });
     </script>
 </body>
