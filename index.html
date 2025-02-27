@@ -11,8 +11,9 @@
             min-height: 100vh;
             margin: 0;
             font-family: Arial, sans-serif;
-            background-color: #f0f8ff;
+            background-color: #f8f9ff;
             padding: 20px;
+            overflow-x: hidden;
         }
 
         #complimentButton {
@@ -25,7 +26,7 @@
             cursor: pointer;
             transition: all 0.3s ease;
             margin: 20px 0;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 8px 25px rgba(255, 105, 180, 0.3);
         }
 
         #complimentButton:hover {
@@ -34,145 +35,149 @@
         }
 
         #complimentText {
-            margin: 30px 0;
-            font-size: 24px;
-            color: #4a4a4a;
+            font-size: 28px;
+            color: #333;
             text-align: center;
-            max-width: 600px;
-            min-height: 80px;
+            max-width: 800px;
+            margin: 40px auto;
             padding: 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
         }
 
         .category-container {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 20px;
-            border-radius: 15px;
-            margin-top: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 500px;
-        }
-
-        .category-title {
-            color: #ff69b4;
-            margin-bottom: 15px;
-            font-size: 18px;
-            text-align: center;
-        }
-
-        .checkbox-group {
+            margin-top: 30px;
             display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .checkbox-label {
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            padding: 10px 15px;
-            border-radius: 10px;
-            transition: all 0.3s ease;
-            font-weight: 500;
-            color: white;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
-        }
-
-        .checkbox-label.personality { background: linear-gradient(45deg, #ff69b4, #ff9ecd); }
-        .checkbox-label.impact { background: linear-gradient(45deg, #4CAF50, #8BC34A); }
-        .checkbox-label.skills { background: linear-gradient(45deg, #2196F3, #03A9F4); }
-        .checkbox-label.growth { background: linear-gradient(45deg, #9C27B0, #E91E63); }
-        .checkbox-label.energy { background: linear-gradient(45deg, #FF9800, #FFC107); }
-        .checkbox-label.intelligence { background: linear-gradient(45deg, #3F51B5, #2196F3); }
-
-        .checkbox-label:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        }
-
-        .checkbox-custom {
-            width: 20px;
-            height: 20px;
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 5px;
-            margin-right: 10px;
-            display: flex;
-            align-items: center;
+            flex-wrap: wrap;
             justify-content: center;
-            transition: all 0.3s ease;
+            gap: 10px;
+            max-width: 600px;
         }
 
-        .checkbox-icon {
+        .category-pill {
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            cursor: pointer;
+            transition: all 0.3s ease;
             font-size: 14px;
-            opacity: 0;
-            transform: scale(0);
-            transition: all 0.3s ease;
+            color: #666;
         }
 
-        .checkbox-label input[type="checkbox"] {
-            display: none;
+        .category-pill.active {
+            border-color: #ff69b4;
+            color: #ff69b4;
+            background: rgba(255, 105, 180, 0.1);
         }
 
-        .checkbox-label input[type="checkbox"]:checked + .checkbox-custom {
-            background: rgba(255, 255, 255, 0.9);
+        .personality-animation {
+            position: fixed;
+            font-size: 40px;
+            z-index: 1000;
+            pointer-events: none;
+            animation: floatHearts 4s ease-in forwards;
         }
 
-        .checkbox-label input[type="checkbox"]:checked + .checkbox-custom .checkbox-icon {
-            opacity: 1;
-            transform: scale(1);
+        @keyframes floatHearts {
+            0% { 
+                transform: translate(0, 0) scale(0.2) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+                transform: translate(0, 0) scale(1) rotate(0deg);
+            }
+            100% { 
+                transform: translate(var(--tx), -100vh) scale(1) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .impact-ripple {
+            position: fixed;
+            border: 4px solid rgba(76, 175, 80, 0.5);
+            border-radius: 50%;
+            z-index: 1000;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            animation: ripple 2.5s ease-out forwards;
+        }
+
+        @keyframes ripple {
+            0% { 
+                width: 0; 
+                height: 0; 
+                opacity: 1; 
+            }
+            100% { 
+                width: 150vw; 
+                height: 150vw; 
+                opacity: 0; 
+            }
+        }
+
+        .skills-star {
+            position: absolute;
+            color: #2196F3;
+            animation: shootingStar 2s ease-out forwards;
+        }
+
+        @keyframes shootingStar {
+            0% { transform: translate(-100px, 100px) rotate(0deg); opacity: 1; }
+            100% { transform: translate(100vw, -100px) rotate(360deg); opacity: 0; }
+        }
+
+        .growth-flower {
+            position: absolute;
+            font-size: 24px;
+            animation: growFlower 2.5s ease-out forwards;
+        }
+
+        @keyframes growFlower {
+            0% { transform: scale(0) translateY(20px); opacity: 0; }
+            50% { transform: scale(1) translateY(0); opacity: 1; }
+            100% { transform: scale(1) translateY(-50px); opacity: 0; }
+        }
+
+        .energy-sparkle {
+            position: absolute;
+            color: #FF9800;
+            animation: sparkleBurst 1.5s ease-out forwards;
+        }
+
+        @keyframes sparkleBurst {
+            0% { transform: scale(0) rotate(0deg); opacity: 1; }
+            100% { transform: scale(2) rotate(180deg); opacity: 0; }
+        }
+
+        .intelligence-bubble {
+            position: absolute;
+            background: linear-gradient(45deg, #3F51B5, #2196F3);
+            border-radius: 50%;
+            animation: floatBubble 3s ease-in-out forwards;
+        }
+
+        @keyframes floatBubble {
+            0% { transform: scale(0) translateY(0); opacity: 0; }
+            50% { transform: scale(1) translateY(-100px); opacity: 0.7; }
+            100% { transform: scale(0.5) translateY(-200px); opacity: 0; }
         }
     </style>
 </head>
 <body>
-    <button id="complimentButton">Compliment Me!</button>
+    <button id="complimentButton">✨ Compliment Me! ✨</button>
     <div id="complimentText"></div>
 
     <div class="category-container">
-        <div class="category-title">Choose compliment types:</div>
-        <div class="checkbox-group">
-            <label class="checkbox-label personality">
-                <input type="checkbox" value="personality" checked>
-                <span class="checkbox-custom">
-                    <span class="checkbox-icon">💫</span>
-                </span>
-                Personality & Character
-            </label>
-            <label class="checkbox-label impact">
-                <input type="checkbox" value="impact" checked>
-                <span class="checkbox-custom">
-                    <span class="checkbox-icon">🤝</span>
-                </span>
-                Impact on Others
-            </label>
-            <label class="checkbox-label skills">
-                <input type="checkbox" value="skills" checked>
-                <span class="checkbox-custom">
-                    <span class="checkbox-icon">🎯</span>
-                </span>
-                Skills & Abilities
-            </label>
-            <label class="checkbox-label growth">
-                <input type="checkbox" value="growth" checked>
-                <span class="checkbox-custom">
-                    <span class="checkbox-icon">🌱</span>
-                </span>
-                Growth & Potential
-            </label>
-            <label class="checkbox-label energy">
-                <input type="checkbox" value="energy" checked>
-                <span class="checkbox-custom">
-                    <span class="checkbox-icon">✨</span>
-                </span>
-                Positive Energy
-            </label>
-            <label class="checkbox-label intelligence">
-                <input type="checkbox" value="intelligence" checked>
-                <span class="checkbox-custom">
-                    <span class="checkbox-icon">🧠</span>
-                </span>
-                Intelligence & Wisdom
-            </label>
-        </div>
+        <button class="category-pill active" data-category="personality">Personality</button>
+        <button class="category-pill active" data-category="impact">Impact</button>
+        <button class="category-pill active" data-category="skills">Skills</button>
+        <button class="category-pill active" data-category="growth">Growth</button>
+        <button class="category-pill active" data-category="energy">Energy</button>
+        <button class="category-pill active" data-category="intelligence">Intelligence</button>
     </div>
 
     <script>
@@ -315,16 +320,27 @@
         const textDisplay = document.getElementById('complimentText');
         let lastIndex = -1;
 
+        // Update click handling for pills
+        document.querySelectorAll('.category-pill').forEach(pill => {
+            pill.addEventListener('click', () => {
+                pill.classList.toggle('active');
+                createSparkle(
+                    pill.offsetLeft + pill.offsetWidth / 2,
+                    pill.offsetTop + pill.offsetHeight / 2
+                );
+            });
+        });
+
         function getRandomCompliment() {
-            const checkedCategories = Array.from(document.querySelectorAll('input[type="checkbox"]:checked'))
-                .map(checkbox => checkbox.value);
+            const selectedCategories = Array.from(document.querySelectorAll('.category-pill.active'))
+                .map(pill => pill.dataset.category);
             
-            if (checkedCategories.length === 0) {
+            if (selectedCategories.length === 0) {
                 return "Please select at least one category! 🎯";
             }
 
             // Pick a random category from the selected ones
-            const randomCategory = checkedCategories[Math.floor(Math.random() * checkedCategories.length)];
+            const randomCategory = selectedCategories[Math.floor(Math.random() * selectedCategories.length)];
             const categoryCompliments = complimentsByCategory[randomCategory];
             
             // Pick a random compliment from the chosen category
@@ -334,12 +350,127 @@
             } while (newIndex === lastIndex && categoryCompliments.length > 1);
             
             lastIndex = newIndex;
+            
+            // Create animation for the chosen category
+            createCategoryAnimation(randomCategory);
+            
             return categoryCompliments[newIndex];
         }
 
+        function createCategoryAnimation(category) {
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+
+            switch(category) {
+                case 'personality':
+                    for(let i = 0; i < 15; i++) {
+                        setTimeout(() => {
+                            const heart = document.createElement('div');
+                            heart.className = 'personality-animation';
+                            heart.innerHTML = '❤️';
+                            heart.style.left = centerX + (Math.random() * 200 - 100) + 'px';
+                            heart.style.top = centerY + (Math.random() * 200 - 100) + 'px';
+                            heart.style.setProperty('--tx', (Math.random() * 400 - 200) + 'px');
+                            document.body.appendChild(heart);
+                            setTimeout(() => heart.remove(), 4000);
+                        }, i * 150);
+                    }
+                    break;
+
+                case 'impact':
+                    for(let i = 0; i < 3; i++) {
+                        setTimeout(() => {
+                            const ripple = document.createElement('div');
+                            ripple.className = 'impact-ripple';
+                            ripple.style.left = centerX + 'px';
+                            ripple.style.top = centerY + 'px';
+                            document.body.appendChild(ripple);
+                            setTimeout(() => ripple.remove(), 2500);
+                        }, i * 500);
+                    }
+                    break;
+
+                case 'skills':
+                    for(let i = 0; i < 5; i++) {
+                        setTimeout(() => {
+                            const star = document.createElement('div');
+                            star.className = 'skills-star';
+                            star.innerHTML = '⭐';
+                            star.style.top = Math.random() * window.innerHeight + 'px';
+                            document.body.appendChild(star);
+                            setTimeout(() => star.remove(), 2000);
+                        }, i * 300);
+                    }
+                    break;
+
+                case 'growth':
+                    for(let i = 0; i < 5; i++) {
+                        setTimeout(() => {
+                            const flower = document.createElement('div');
+                            flower.className = 'growth-flower';
+                            flower.innerHTML = '🌸';
+                            flower.style.left = Math.random() * window.innerWidth + 'px';
+                            flower.style.bottom = '0';
+                            document.body.appendChild(flower);
+                            setTimeout(() => flower.remove(), 2500);
+                        }, i * 300);
+                    }
+                    break;
+
+                case 'energy':
+                    for(let i = 0; i < 8; i++) {
+                        setTimeout(() => {
+                            const sparkle = document.createElement('div');
+                            sparkle.className = 'energy-sparkle';
+                            sparkle.innerHTML = '✨';
+                            sparkle.style.left = Math.random() * window.innerWidth + 'px';
+                            sparkle.style.top = Math.random() * window.innerHeight + 'px';
+                            document.body.appendChild(sparkle);
+                            setTimeout(() => sparkle.remove(), 1500);
+                        }, i * 200);
+                    }
+                    break;
+
+                case 'intelligence':
+                    for(let i = 0; i < 6; i++) {
+                        setTimeout(() => {
+                            const bubble = document.createElement('div');
+                            bubble.className = 'intelligence-bubble';
+                            bubble.style.width = Math.random() * 30 + 20 + 'px';
+                            bubble.style.height = bubble.style.width;
+                            bubble.style.left = Math.random() * window.innerWidth + 'px';
+                            bubble.style.bottom = '0';
+                            document.body.appendChild(bubble);
+                            setTimeout(() => bubble.remove(), 3000);
+                        }, i * 300);
+                    }
+                    break;
+            }
+        }
+
         button.addEventListener('click', () => {
-            textDisplay.textContent = getRandomCompliment();
+            // Update compliment text with animation
+            textDisplay.style.opacity = '0';
+            setTimeout(() => {
+                const compliment = getRandomCompliment();
+                textDisplay.textContent = compliment;
+                textDisplay.style.opacity = '1';
+                textDisplay.style.animation = 'none';
+                textDisplay.offsetHeight; // Trigger reflow
+                textDisplay.style.animation = 'fadeInUp 0.5s ease-out';
+            }, 200);
         });
+
+        // Add sparkle effect function if not already defined
+        function createSparkle(x, y) {
+            const sparkle = document.createElement('div');
+            sparkle.className = 'sparkle';
+            sparkle.style.left = x + 'px';
+            sparkle.style.top = y + 'px';
+            sparkle.textContent = '✨';
+            document.body.appendChild(sparkle);
+            setTimeout(() => sparkle.remove(), 1000);
+        }
     </script>
 </body>
 </html> 
