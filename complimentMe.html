@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Compliment Generator</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f8f9ff;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        #complimentButton {
+            padding: 25px 50px;
+            font-size: 28px;
+            background: linear-gradient(45deg, #ff69b4, #ff9ecd);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 20px 0;
+            box-shadow: 0 8px 25px rgba(255, 105, 180, 0.3);
+        }
+
+        #complimentButton:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+        }
+
+        #complimentText {
+            font-size: 28px;
+            color: #333;
+            text-align: center;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .category-container {
+            margin-top: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            max-width: 600px;
+        }
+
+        .category-pill {
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .category-pill.active {
+            border-color: #ff69b4;
+            color: #ff69b4;
+            background: rgba(255, 105, 180, 0.1);
+        }
+
+        .personality-animation {
+            position: fixed;
+            font-size: 40px;
+            z-index: 1000;
+            pointer-events: none;
+            animation: floatHearts 4s ease-in forwards;
+        }
+
+        @keyframes floatHearts {
+            0% { 
+                transform: translate(0, 0) scale(0.2) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+                transform: translate(0, 0) scale(1) rotate(0deg);
+            }
+            100% { 
+                transform: translate(var(--tx), -100vh) scale(1) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .impact-ripple {
+            position: fixed;
+            border: 4px solid rgba(76, 175, 80, 0.5);
+            border-radius: 50%;
+            z-index: 1000;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            animation: ripple 2.5s ease-out forwards;
+        }
+
+        @keyframes ripple {
+            0% { 
+                width: 0; 
+                height: 0; 
+                opacity: 1; 
+            }
+            100% { 
+                width: 150vw; 
+                height: 150vw; 
+                opacity: 0; 
+            }
+        }
+
+        .skills-star {
+            position: absolute;
+            color: #2196F3;
+            animation: shootingStar 2s ease-out forwards;
+        }
+
+        @keyframes shootingStar {
+            0% { transform: translate(-100px, 100px) rotate(0deg); opacity: 1; }
+            100% { transform: translate(100vw, -100px) rotate(360deg); opacity: 0; }
+        }
+
+        .growth-flower {
+            position: absolute;
+            font-size: 24px;
+            animation: growFlower 2.5s ease-out forwards;
+        }
+
+        @keyframes growFlower {
+            0% { transform: scale(0) translateY(20px); opacity: 0; }
+            50% { transform: scale(1) translateY(0); opacity: 1; }
+            100% { transform: scale(1) translateY(-50px); opacity: 0; }
+        }
+
+        .energy-sparkle {
+            position: absolute;
+            color: #FF9800;
+            animation: sparkleBurst 1.5s ease-out forwards;
+        }
+
+        @keyframes sparkleBurst {
+            0% { transform: scale(0) rotate(0deg); opacity: 1; }
+            100% { transform: scale(2) rotate(180deg); opacity: 0; }
+        }
+
+        .intelligence-bubble {
+            position: absolute;
+            background: linear-gradient(45deg, #3F51B5, #2196F3);
+            border-radius: 50%;
+            animation: floatBubble 3s ease-in-out forwards;
+        }
+
+        @keyframes floatBubble {
+            0% { transform: scale(0) translateY(0); opacity: 0; }
+            50% { transform: scale(1) translateY(-100px); opacity: 0.7; }
+            100% { transform: scale(0.5) translateY(-200px); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <button id="complimentButton">✨ Compliment Me! ✨</button>
+    <div id="complimentText"></div>
+
+    <div class="category-container">
+        <button class="category-pill active" data-category="personality">Personality</button>
+        <button class="category-pill active" data-category="impact">Impact</button>
+        <button class="category-pill active" data-category="skills">Skills</button>
+        <button class="category-pill active" data-category="growth">Growth</button>
+        <button class="category-pill active" data-category="energy">Energy</button>
+        <button class="category-pill active" data-category="intelligence">Intelligence</button>
+    </div>
+
+    <script>
+        const complimentsByCategory = {
+            personality: [
+                "Your resilience is admirable! 💪",
+                "Your authenticity is refreshing! 🌟",
+                "You have such a beautiful soul! ✨",
+                "Your enthusiasm is contagious! 🎉",
+                "You're remarkably thoughtful! 💭",
+                "Your courage is inspiring! 🦁",
+                "You're incredibly resourceful! 🔧",
+                "Your creativity knows no bounds! 🎨",
+                "You're wonderfully unique! 🌈",
+                "Your determination is remarkable! 🎯",
+                "Your gentle spirit touches hearts! 🕊️",
+                "Your honesty is refreshing! 💫",
+                "Your patience is admirable! ⌛",
+                "Your empathy knows no bounds! 💝",
+                "Your sense of humor is delightful! 😊",
+                "Your compassion changes lives! 🤗",
+                "Your optimism is uplifting! 🌅",
+                "Your authenticity inspires others! ⭐",
+                "Your emotional intelligence is remarkable! 💫",
+                "Your adaptability is impressive! 🦋"
+            ],
+            impact: [
+                "You make people feel heard and valued! 👂",
+                "Your presence makes any room brighter! 💫",
+                "You inspire people to be better! 🌱",
+                "Your kindness ripples out to others! 💝",
+                "You're a natural leader! 👑",
+                "You bring out the best in everyone! 🌟",
+                "Your energy is absolutely infectious! ⚡",
+                "You're a wonderful friend! 🤝",
+                "Your support means the world to others! 🌍",
+                "You make the world a better place! 🌎",
+                "Your influence creates positive change! 🌊",
+                "You're a catalyst for growth in others! 🌱",
+                "Your mentorship is invaluable! 📚",
+                "You create safe spaces for everyone! 🏠",
+                "Your leadership inspires confidence! 🎯",
+                "You're a cornerstone of your community! 🏛️",
+                "Your advocacy makes a difference! 📢",
+                "You unite people effortlessly! 🤝",
+                "Your presence brings peace! 🕊️",
+                "You're a beacon of hope! 🌟"
+            ],
+            skills: [
+                "Your problem-solving abilities are exceptional! 🧩",
+                "Your attention to detail is remarkable! 🔍",
+                "You're incredibly talented! 🎭",
+                "Your work ethic is inspiring! 📚",
+                "You're amazingly capable! 💫",
+                "Your ideas are brilliant! 💡",
+                "You're a natural at this! 🎯",
+                "Your dedication shows in everything you do! ⭐",
+                "You make complex tasks look easy! 🎨",
+                "Your skills are truly impressive! 🏆",
+                "Your technical expertise is outstanding! 💻",
+                "Your artistic vision is unique! 🎨",
+                "Your writing skills are powerful! ✍️",
+                "Your analytical thinking is sharp! 🔬",
+                "Your organizational skills are amazing! 📋",
+                "Your communication style is effective! 🗣️",
+                "Your leadership abilities shine! 👥",
+                "Your creative solutions are innovative! 💡",
+                "Your project management is stellar! 📊",
+                "Your networking abilities are remarkable! 🤝"
+            ],
+            growth: [
+                "You're growing stronger every day! 🌱",
+                "Your potential is limitless! 🚀",
+                "You're on the right path! 🛤️",
+                "You handle challenges with grace! 🎭",
+                "Your progress is inspiring! 📈",
+                "You're becoming more amazing every day! 🌅",
+                "Your future is so bright! 🌟",
+                "You're constantly evolving! 🦋",
+                "You're making incredible progress! 🎯",
+                "Your growth is remarkable! 🌳",
+                "Your self-improvement journey inspires! 🗺️",
+                "You embrace change beautifully! 🔄",
+                "Your resilience keeps growing! 💪",
+                "You learn from every experience! 📚",
+                "Your adaptability is impressive! 🌊",
+                "You're mastering new skills! 🎯",
+                "Your personal growth is evident! 📈",
+                "You're breaking your own records! 🏆",
+                "You're exceeding expectations! ⭐",
+                "Your transformation is beautiful! 🦋"
+            ],
+            energy: [
+                "Your smile brightens everyone's day! 😊",
+                "Your laugh is music to others' ears! 🎵",
+                "Your positive attitude is refreshing! 🌞",
+                "You radiate good vibes! ✨",
+                "Your enthusiasm is contagious! 🎉",
+                "You're a ray of sunshine! ☀️",
+                "Your spirit is indomitable! 🔥",
+                "You're absolutely delightful! 🌸",
+                "Your energy is magnetic! ⚡",
+                "You're pure joy to be around! 🎈",
+                "Your zest for life is contagious! 🌟",
+                "Your cheerfulness lifts spirits! 🎪",
+                "Your optimism is refreshing! 🌅",
+                "Your passion is inspiring! 🔥",
+                "Your excitement is infectious! 🎉",
+                "Your vitality is remarkable! ⚡",
+                "Your presence energizes others! 💫",
+                "Your joy spreads happiness! 🌈",
+                "Your enthusiasm motivates! 🚀",
+                "Your spirit is uplifting! 🎈"
+            ],
+            intelligence: [
+                "Your insight is remarkable! 🔮",
+                "Your wisdom is beyond your years! 📚",
+                "Your perspective is enlightening! 💡",
+                "You ask great questions! 🤔",
+                "Your curiosity is inspiring! 🔍",
+                "You're incredibly perceptive! 👁️",
+                "Your mind is fascinating! 🧠",
+                "You're brilliantly clever! ✨",
+                "Your understanding runs deep! 🌊",
+                "You're intellectually curious! 📖",
+                "Your analytical skills are impressive! 🔬",
+                "Your problem-solving is innovative! 🧩",
+                "Your knowledge is extensive! 📚",
+                "Your learning capacity is remarkable! 🎓",
+                "Your intellectual curiosity is inspiring! 🔍",
+                "Your critical thinking is sharp! 💭",
+                "Your mental agility is impressive! ⚡",
+                "Your reasoning is sophisticated! 🎯",
+                "Your cognitive abilities shine! 💫",
+                "Your intellectual depth is profound! 🌊"
+            ]
+        };
+
+        const button = document.getElementById('complimentButton');
+        const textDisplay = document.getElementById('complimentText');
+        let lastIndex = -1;
+
+        // Update click handling for pills
+        document.querySelectorAll('.category-pill').forEach(pill => {
+            pill.addEventListener('click', () => {
+                pill.classList.toggle('active');
+                createSparkle(
+                    pill.offsetLeft + pill.offsetWidth / 2,
+                    pill.offsetTop + pill.offsetHeight / 2
+                );
+            });
+        });
+
+        function getRandomCompliment() {
+            const selectedCategories = Array.from(document.querySelectorAll('.category-pill.active'))
+                .map(pill => pill.dataset.category);
+            
+            if (selectedCategories.length === 0) {
+                return "Please select at least one category! 🎯";
+            }
+
+            // Pick a random category from the selected ones
+            const randomCategory = selectedCategories[Math.floor(Math.random() * selectedCategories.length)];
+            const categoryCompliments = complimentsByCategory[randomCategory];
+            
+            // Pick a random compliment from the chosen category
+            let newIndex;
+            do {
+                newIndex = Math.floor(Math.random() * categoryCompliments.length);
+            } while (newIndex === lastIndex && categoryCompliments.length > 1);
+            
+            lastIndex = newIndex;
+            
+            // Create animation for the chosen category
+            createCategoryAnimation(randomCategory);
+            
+            return categoryCompliments[newIndex];
+        }
+
+        function createCategoryAnimation(category) {
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+
+            switch(category) {
+                case 'personality':
+                    for(let i = 0; i < 15; i++) {
+                        setTimeout(() => {
+                            const heart = document.createElement('div');
+                            heart.className = 'personality-animation';
+                            heart.innerHTML = '❤️';
+                            heart.style.left = centerX + (Math.random() * 200 - 100) + 'px';
+                            heart.style.top = centerY + (Math.random() * 200 - 100) + 'px';
+                            heart.style.setProperty('--tx', (Math.random() * 400 - 200) + 'px');
+                            document.body.appendChild(heart);
+                            setTimeout(() => heart.remove(), 4000);
+                        }, i * 150);
+                    }
+                    break;
+
+                case 'impact':
+                    for(let i = 0; i < 3; i++) {
+                        setTimeout(() => {
+                            const ripple = document.createElement('div');
+                            ripple.className = 'impact-ripple';
+                            ripple.style.left = centerX + 'px';
+                            ripple.style.top = centerY + 'px';
+                            document.body.appendChild(ripple);
+                            setTimeout(() => ripple.remove(), 2500);
+                        }, i * 500);
+                    }
+                    break;
+
+                case 'skills':
+                    for(let i = 0; i < 5; i++) {
+                        setTimeout(() => {
+                            const star = document.createElement('div');
+                            star.className = 'skills-star';
+                            star.innerHTML = '⭐';
+                            star.style.top = Math.random() * window.innerHeight + 'px';
+                            document.body.appendChild(star);
+                            setTimeout(() => star.remove(), 2000);
+                        }, i * 300);
+                    }
+                    break;
+
+                case 'growth':
+                    for(let i = 0; i < 5; i++) {
+                        setTimeout(() => {
+                            const flower = document.createElement('div');
+                            flower.className = 'growth-flower';
+                            flower.innerHTML = '🌸';
+                            flower.style.left = Math.random() * window.innerWidth + 'px';
+                            flower.style.bottom = '0';
+                            document.body.appendChild(flower);
+                            setTimeout(() => flower.remove(), 2500);
+                        }, i * 300);
+                    }
+                    break;
+
+                case 'energy':
+                    for(let i = 0; i < 8; i++) {
+                        setTimeout(() => {
+                            const sparkle = document.createElement('div');
+                            sparkle.className = 'energy-sparkle';
+                            sparkle.innerHTML = '✨';
+                            sparkle.style.left = Math.random() * window.innerWidth + 'px';
+                            sparkle.style.top = Math.random() * window.innerHeight + 'px';
+                            document.body.appendChild(sparkle);
+                            setTimeout(() => sparkle.remove(), 1500);
+                        }, i * 200);
+                    }
+                    break;
+
+                case 'intelligence':
+                    for(let i = 0; i < 6; i++) {
+                        setTimeout(() => {
+                            const bubble = document.createElement('div');
+                            bubble.className = 'intelligence-bubble';
+                            bubble.style.width = Math.random() * 30 + 20 + 'px';
+                            bubble.style.height = bubble.style.width;
+                            bubble.style.left = Math.random() * window.innerWidth + 'px';
+                            bubble.style.bottom = '0';
+                            document.body.appendChild(bubble);
+                            setTimeout(() => bubble.remove(), 3000);
+                        }, i * 300);
+                    }
+                    break;
+            }
+        }
+
+        button.addEventListener('click', () => {
+            // Update compliment text with animation
+            textDisplay.style.opacity = '0';
+            setTimeout(() => {
+                const compliment = getRandomCompliment();
+                textDisplay.textContent = compliment;
+                textDisplay.style.opacity = '1';
+                textDisplay.style.animation = 'none';
+                textDisplay.offsetHeight; // Trigger reflow
+                textDisplay.style.animation = 'fadeInUp 0.5s ease-out';
+            }, 200);
+        });
+
+        // Add sparkle effect function if not already defined
+        function createSparkle(x, y) {
+            const sparkle = document.createElement('div');
+            sparkle.className = 'sparkle';
+            sparkle.style.left = x + 'px';
+            sparkle.style.top = y + 'px';
+            sparkle.textContent = '✨';
+            document.body.appendChild(sparkle);
+            setTimeout(() => sparkle.remove(), 1000);
+        }
+    </script>
+</body>
+</html> 
