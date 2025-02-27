@@ -8,171 +8,10 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
             font-family: Arial, sans-serif;
             background-color: #f0f8ff;
-            overflow: hidden;
-        }
-
-        #complimentButton {
-            padding: 15px 30px;
-            font-size: 20px;
-            background-color: #ff69b4;
-            color: white;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: transform 0.2s;
-            z-index: 100;
-        }
-
-        #complimentButton:hover {
-            transform: scale(1.1);
-        }
-
-        #complimentText {
-            margin-top: 30px;
-            font-size: 24px;
-            color: #4a4a4a;
-            text-align: center;
-            max-width: 600px;
-            min-height: 80px;
-            padding: 20px;
-            z-index: 100;
-        }
-
-        .balloon {
-            position: absolute;
-            bottom: -100px;
-            width: 40px;
-            height: 50px;
-            background: #ff69b4;
-            border-radius: 50%;
-            animation: float 4s ease-in forwards;
-            z-index: 1;
-        }
-
-        .balloon:before {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 20px;
-            height: 20px;
-            width: 1px;
-            background: #ff69b4;
-        }
-
-        @keyframes float {
-            0% {
-                transform: translateY(0) rotate(0deg);
-            }
-            100% {
-                transform: translateY(-100vh) rotate(360deg);
-            }
-        }
-
-        .flower-container {
-            position: fixed;
-            bottom: 0;
-            left: 50px;
-        }
-
-        .stem {
-            width: 4px;
-            height: 0;
-            background: #2d9c1f;
-            margin: 0 auto;
-            animation: growStem 3s forwards;
-        }
-
-        .flower {
-            width: 40px;
-            height: 40px;
-            position: relative;
-            transform-origin: bottom center;
-            animation: bloomFlower 2s forwards;
-            animation-delay: 2s;
-            opacity: 0;
-        }
-
-        .petal {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background: #ff69b4;
-            border-radius: 50%;
-        }
-
-        .center {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background: #ffeb3b;
-            border-radius: 50%;
-            top: 10px;
-            left: 10px;
-        }
-
-        @keyframes growStem {
-            0% { height: 0; }
-            100% { height: 100px; }
-        }
-
-        @keyframes bloomFlower {
-            0% {
-                transform: scale(0);
-                opacity: 0;
-            }
-            100% {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-
-        /* Theme styles for each category */
-        .theme-personality {
-            background: linear-gradient(45deg, #ff69b4, #ff9ecd);
-            color: #fff;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
-        }
-
-        .theme-impact {
-            background: linear-gradient(45deg, #4CAF50, #8BC34A);
-            color: #fff;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
-        }
-
-        .theme-skills {
-            background: linear-gradient(45deg, #2196F3, #03A9F4);
-            color: #fff;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
-        }
-
-        .theme-growth {
-            background: linear-gradient(45deg, #9C27B0, #E91E63);
-            color: #fff;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
-        }
-
-        .theme-energy {
-            background: linear-gradient(45deg, #FF9800, #FFC107);
-            color: #fff;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
-        }
-
-        .theme-intelligence {
-            background: linear-gradient(45deg, #3F51B5, #2196F3);
-            color: #fff;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
-        }
-
-        /* Add animation for theme transition */
-        .compliment-container {
-            transition: all 0.5s ease;
-            padding: 20px;
-            border-radius: 15px;
-            margin: 20px;
         }
 
         .category-container {
@@ -209,11 +48,10 @@
             border-radius: 12px;
             transition: all 0.3s ease;
             font-weight: 500;
-            position: relative;
-            overflow: hidden;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
         }
 
-        /* Category-specific colors */
         .checkbox-label.personality { background: linear-gradient(45deg, #ff69b4, #ff9ecd); }
         .checkbox-label.impact { background: linear-gradient(45deg, #4CAF50, #8BC34A); }
         .checkbox-label.skills { background: linear-gradient(45deg, #2196F3, #03A9F4); }
@@ -221,22 +59,11 @@
         .checkbox-label.energy { background: linear-gradient(45deg, #FF9800, #FFC107); }
         .checkbox-label.intelligence { background: linear-gradient(45deg, #3F51B5, #2196F3); }
 
-        .checkbox-label {
-            color: white;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
-        }
-
         .checkbox-label:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
 
-        /* Hide original checkbox */
-        .checkbox-label input[type="checkbox"] {
-            display: none;
-        }
-
-        /* Custom checkbox */
         .checkbox-custom {
             width: 24px;
             height: 24px;
@@ -249,7 +76,6 @@
             transition: all 0.3s ease;
         }
 
-        /* Checkbox icon */
         .checkbox-icon {
             font-size: 16px;
             opacity: 0;
@@ -257,7 +83,10 @@
             transition: all 0.3s ease;
         }
 
-        /* Checked state */
+        .checkbox-label input[type="checkbox"] {
+            display: none;
+        }
+
         .checkbox-label input[type="checkbox"]:checked + .checkbox-custom {
             background: rgba(255, 255, 255, 0.9);
         }
@@ -267,7 +96,6 @@
             transform: scale(1);
         }
 
-        /* Select All button */
         #selectAllBtn {
             background: linear-gradient(45deg, #ff69b4, #ff9ecd);
             color: white;
@@ -285,42 +113,30 @@
             box-shadow: 0 2px 8px rgba(255, 105, 180, 0.3);
         }
 
-        #selectAllBtn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(255, 105, 180, 0.4);
+        #complimentButton {
+            padding: 15px 30px;
+            font-size: 20px;
+            background-color: #ff69b4;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin: 20px 0;
         }
 
-        #selectAllBtn:active {
-            transform: translateY(0);
-        }
-
-        /* Add some animation for checkbox selection */
-        @keyframes checkPop {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
-        }
-
-        .checkbox-label input[type="checkbox"]:checked + .checkbox-custom {
-            animation: checkPop 0.3s ease;
+        #complimentText {
+            margin-top: 30px;
+            font-size: 24px;
+            color: #4a4a4a;
+            text-align: center;
+            max-width: 600px;
+            min-height: 80px;
+            padding: 20px;
         }
     </style>
 </head>
 <body>
-    <button id="complimentButton">Compliment Me!</button>
-    <div id="complimentText"></div>
-    
-    <div class="flower-container">
-        <div class="flower">
-            <div class="petal" style="top: 0; left: 10px;"></div>
-            <div class="petal" style="top: 10px; left: 0;"></div>
-            <div class="petal" style="top: 10px; left: 20px;"></div>
-            <div class="petal" style="top: 20px; left: 10px;"></div>
-            <div class="center"></div>
-        </div>
-        <div class="stem"></div>
-    </div>
-
     <div class="category-container">
         <div class="category-title">Choose Your Compliment Types ✨</div>
         <button id="selectAllBtn">Select All</button>
@@ -369,6 +185,9 @@
             </label>
         </div>
     </div>
+
+    <button id="complimentButton">Compliment Me!</button>
+    <div id="complimentText"></div>
 
     <script>
         const complimentsByCategory = {
@@ -508,55 +327,42 @@
 
         const button = document.getElementById('complimentButton');
         const textDisplay = document.getElementById('complimentText');
+        const selectAllBtn = document.getElementById('selectAllBtn');
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
         let lastIndex = -1;
 
         function getRandomCompliment() {
+            const checkedCategories = Array.from(document.querySelectorAll('input[type="checkbox"]:checked'))
+                .map(checkbox => checkbox.value);
+            
+            if (checkedCategories.length === 0) {
+                return "Please select at least one category! 🎯";
+            }
+
+            const availableCompliments = checkedCategories.flatMap(category => 
+                complimentsByCategory[category]
+            );
+
             let newIndex;
             do {
-                newIndex = Math.floor(Math.random() * complimentsByCategory.personality.length);
-            } while (newIndex === lastIndex && complimentsByCategory.personality.length > 1);
+                newIndex = Math.floor(Math.random() * availableCompliments.length);
+            } while (newIndex === lastIndex && availableCompliments.length > 1);
             
             lastIndex = newIndex;
-
-            // Add theme change
-            const category = Object.keys(complimentsByCategory)[Math.floor(Math.random() * Object.keys(complimentsByCategory).length)];
-            document.body.className = `theme-${category}`;
-            
-            return complimentsByCategory.personality[newIndex];
-        }
-
-        function createBalloon() {
-            const balloon = document.createElement('div');
-            balloon.className = 'balloon';
-            balloon.style.left = Math.random() * window.innerWidth + 'px';
-            balloon.style.backgroundColor = `hsl(${Math.random() * 360}, 70%, 70%)`;
-            document.body.appendChild(balloon);
-
-            // Remove balloon after animation
-            setTimeout(() => {
-                balloon.remove();
-            }, 4000);
+            return availableCompliments[newIndex];
         }
 
         button.addEventListener('click', () => {
-            textDisplay.style.opacity = '0';
-            
-            // Create multiple balloons
-            for (let i = 0; i < 5; i++) {
-                setTimeout(() => createBalloon(), i * 200);
-            }
-
-            setTimeout(() => {
-                textDisplay.textContent = getRandomCompliment();
-                textDisplay.style.opacity = '1';
-            }, 200);
+            textDisplay.textContent = getRandomCompliment();
         });
 
-        // Add fade transition
-        textDisplay.style.transition = 'opacity 0.2s ease-in-out';
-
-        // Add theme transition
-        textDisplay.className = 'compliment-container';
+        selectAllBtn.addEventListener('click', () => {
+            const areAllChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = !areAllChecked;
+            });
+            selectAllBtn.textContent = areAllChecked ? "Select All" : "Deselect All";
+        });
     </script>
 </body>
 </html> 
