@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Compliment Generator</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+            overflow: hidden;
+        }
+
+        #complimentButton {
+            padding: 15px 30px;
+            font-size: 20px;
+            background-color: #ff69b4;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            z-index: 100;
+        }
+
+        #complimentButton:hover {
+            transform: scale(1.1);
+        }
+
+        #complimentText {
+            margin-top: 30px;
+            font-size: 24px;
+            color: #4a4a4a;
+            text-align: center;
+            max-width: 600px;
+            min-height: 80px;
+            padding: 20px;
+            z-index: 100;
+        }
+
+        .balloon {
+            position: absolute;
+            bottom: -100px;
+            width: 40px;
+            height: 50px;
+            background: #ff69b4;
+            border-radius: 50%;
+            animation: float 4s ease-in forwards;
+            z-index: 1;
+        }
+
+        .balloon:before {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 20px;
+            height: 20px;
+            width: 1px;
+            background: #ff69b4;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+            }
+        }
+
+        .flower-container {
+            position: fixed;
+            bottom: 0;
+            left: 50px;
+        }
+
+        .stem {
+            width: 4px;
+            height: 0;
+            background: #2d9c1f;
+            margin: 0 auto;
+            animation: growStem 3s forwards;
+        }
+
+        .flower {
+            width: 40px;
+            height: 40px;
+            position: relative;
+            transform-origin: bottom center;
+            animation: bloomFlower 2s forwards;
+            animation-delay: 2s;
+            opacity: 0;
+        }
+
+        .petal {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #ff69b4;
+            border-radius: 50%;
+        }
+
+        .center {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #ffeb3b;
+            border-radius: 50%;
+            top: 10px;
+            left: 10px;
+        }
+
+        @keyframes growStem {
+            0% { height: 0; }
+            100% { height: 100px; }
+        }
+
+        @keyframes bloomFlower {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button id="complimentButton">Compliment Me!</button>
+    <div id="complimentText"></div>
+    
+    <div class="flower-container">
+        <div class="flower">
+            <div class="petal" style="top: 0; left: 10px;"></div>
+            <div class="petal" style="top: 10px; left: 0;"></div>
+            <div class="petal" style="top: 10px; left: 20px;"></div>
+            <div class="petal" style="top: 20px; left: 10px;"></div>
+            <div class="center"></div>
+        </div>
+        <div class="stem"></div>
+    </div>
+
+    <script>
+        const compliments = [
+            "Your positive energy is contagious! 🌟",
+            "You make the world a better place just by being in it! 🌍",
+            "Your potential is limitless! 🚀",
+            "You have a beautiful heart! ❤️",
+            "You're making a difference! 🌈",
+            "Your smile lights up the room! ✨",
+            "You're stronger than you know! 💪",
+            "You inspire others around you! 🌠",
+            "Your kindness matters! 🎁",
+            "You're capable of amazing things! 🎯"
+        ];
+
+        const button = document.getElementById('complimentButton');
+        const textDisplay = document.getElementById('complimentText');
+        let lastIndex = -1;
+
+        function getRandomCompliment() {
+            let newIndex;
+            do {
+                newIndex = Math.floor(Math.random() * compliments.length);
+            } while (newIndex === lastIndex && compliments.length > 1);
+            
+            lastIndex = newIndex;
+            return compliments[newIndex];
+        }
+
+        function createBalloon() {
+            const balloon = document.createElement('div');
+            balloon.className = 'balloon';
+            balloon.style.left = Math.random() * window.innerWidth + 'px';
+            balloon.style.backgroundColor = `hsl(${Math.random() * 360}, 70%, 70%)`;
+            document.body.appendChild(balloon);
+
+            // Remove balloon after animation
+            setTimeout(() => {
+                balloon.remove();
+            }, 4000);
+        }
+
+        button.addEventListener('click', () => {
+            textDisplay.style.opacity = '0';
+            
+            // Create multiple balloons
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => createBalloon(), i * 200);
+            }
+
+            setTimeout(() => {
+                textDisplay.textContent = getRandomCompliment();
+                textDisplay.style.opacity = '1';
+            }, 200);
+        });
+
+        // Add fade transition
+        textDisplay.style.transition = 'opacity 0.2s ease-in-out';
+    </script>
+</body>
+</html> 
