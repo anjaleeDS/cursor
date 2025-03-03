@@ -65,7 +65,18 @@
                 left: false,
                 up: false
             },
-            cameraOffset: 0
+            cameraOffset: 0,
+            prize: {
+                x: 0,
+                y: 0,
+                width: 40,
+                height: 40,
+                collected: false,
+                sprite: '🍛' // Curry emoji as placeholder
+            },
+            levelComplete: false,
+            fireworks: [],
+            showingFireworks: false
         };
 
         function generateLevel(levelNum) {
@@ -99,6 +110,24 @@
                 }
             });
 
+            // Place prize at the end of the level
+            game.prize = {
+                x: 2200,  // Near the end of the level
+                y: groundHeight - 100, // Above the ground
+                width: 40,
+                height: 40,
+                collected: false,
+                sprite: '🍛'
+            };
+
+            // Add a platform specifically for the prize
+            platforms.push({
+                x: 2150,
+                y: groundHeight - 60,
+                width: 150,
+                height: 20
+            });
+
             return platforms;
         }
 
@@ -110,6 +139,8 @@
             game.chicken.velocityX = 0;
             game.chicken.velocityY = 0;
             game.cameraOffset = 0;
+            game.prize.sprite = getPrizeSpriteForLevel(levelNum);
+            game.prize.collected = false;
             document.getElementById('levelDisplay').textContent = levelNum;
         }
 
@@ -121,51 +152,81 @@
         }
 
         function updateGame() {
-            // Horizontal movement
-            if(game.keys.right) game.chicken.velocityX = game.chicken.speed;
-            else if(game.keys.left) game.chicken.velocityX = -game.chicken.speed;
-            else game.chicken.velocityX = 0;
+            if (game.showingFireworks) {
+                // Update fireworks
+                game.fireworks.forEach((firework, index) => {
+                    firework.update();
+                    if (firework.lifetime <= 0) {
+                        game.fireworks.splice(index, 1);
+                    }
+                });
 
-            // Jumping
-            if(game.keys.up && !game.chicken.isJumping) {
-                game.chicken.velocityY = game.chicken.jumpForce;
-                game.chicken.isJumping = true;
+                // Add new fireworks while celebrating
+                if (Math.random() < 0.1 && game.fireworks.length < 5) {
+                    const x = Math.random() * canvas.width;
+                    const y = Math.random() * (canvas.height / 2);
+                    game.fireworks.push(new Firework(x, y));
+                }
+
+                // Stop celebration after a while
+                if (game.fireworks.length === 0) {
+                    game.showingFireworks = false;
+                    loadLevel(game.level + 1);
+                }
+                return;
             }
 
-            // Apply gravity
-            game.chicken.velocityY += 0.5;
+            // Regular game updates
+            if (!game.prize.collected) {
+                // Horizontal movement
+                if (game.keys.right) game.chicken.velocityX = game.chicken.speed;
+                else if (game.keys.left) game.chicken.velocityX = -game.chicken.speed;
+                else game.chicken.velocityX = 0;
 
-            // Update position
-            game.chicken.x += game.chicken.velocityX;
-            game.chicken.y += game.chicken.velocityY;
+                // Jumping
+                if (game.keys.up && !game.chicken.isJumping) {
+                    game.chicken.velocityY = game.chicken.jumpForce;
+                    game.chicken.isJumping = true;
+                }
 
-            // Platform collisions
-            game.platforms.forEach(platform => {
-                if(checkCollision(game.chicken, platform)) {
-                    if(game.chicken.velocityY > 0) {
-                        game.chicken.y = platform.y - game.chicken.height;
-                        game.chicken.velocityY = 0;
-                        game.chicken.isJumping = false;
+                // Apply gravity
+                game.chicken.velocityY += 0.5;
+
+                // Update position
+                game.chicken.x += game.chicken.velocityX;
+                game.chicken.y += game.chicken.velocityY;
+
+                // Platform collisions
+                game.platforms.forEach(platform => {
+                    if (checkCollision(game.chicken, platform)) {
+                        if (game.chicken.velocityY > 0) {
+                            game.chicken.y = platform.y - game.chicken.height;
+                            game.chicken.velocityY = 0;
+                            game.chicken.isJumping = false;
+                        }
                     }
-                }
-            });
+                });
 
-            // Collect curry pieces
-            game.curryPieces.forEach(curry => {
-                if(!curry.collected && checkCollision(game.chicken, curry)) {
-                    curry.collected = true;
-                    game.score += 10;
+                // Collect curry pieces
+                game.curryPieces.forEach(curry => {
+                    if(!curry.collected && checkCollision(game.chicken, curry)) {
+                        curry.collected = true;
+                        game.score += 10;
+                        document.getElementById('scoreDisplay').textContent = game.score;
+                    }
+                });
+
+                // Check for prize collection
+                if (!game.prize.collected && checkCollision(game.chicken, game.prize)) {
+                    game.prize.collected = true;
+                    game.score += 100;
                     document.getElementById('scoreDisplay').textContent = game.score;
+                    startFireworksCelebration();
                 }
-            });
 
-            // Update camera
-            game.cameraOffset = -game.chicken.x + canvas.width/3;
-            if(game.cameraOffset > 0) game.cameraOffset = 0;
-
-            // Check for level completion
-            if(game.chicken.x > 2200) {
-                loadLevel(game.level + 1);
+                // Update camera
+                game.cameraOffset = -game.chicken.x + canvas.width/3;
+                if (game.cameraOffset > 0) game.cameraOffset = 0;
             }
         }
 
@@ -199,7 +260,53 @@
             ctx.fillStyle = '#000000';
             ctx.fillRect(game.chicken.x + 25, game.chicken.y + 10, 3, 3); // Eye
 
+            // Draw prize if not collected
+            if (!game.prize.collected) {
+                // Draw golden glow effect
+                ctx.shadowColor = 'gold';
+                ctx.shadowBlur = 20;
+                ctx.fillStyle = '#FFD700';
+                ctx.beginPath();
+                ctx.arc(
+                    game.prize.x + game.prize.width/2,
+                    game.prize.y + game.prize.height/2,
+                    game.prize.width/2,
+                    0,
+                    Math.PI * 2
+                );
+                ctx.fill();
+                
+                // Draw prize sprite
+                ctx.shadowBlur = 0;
+                ctx.font = '30px Arial';
+                ctx.fillText(
+                    game.prize.sprite,
+                    game.prize.x,
+                    game.prize.y + 30
+                );
+            }
+
             ctx.restore();
+
+            // Draw fireworks celebration
+            if (game.showingFireworks) {
+                // Dim background
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Draw fireworks
+                game.fireworks.forEach(firework => firework.draw(ctx));
+                
+                // Draw celebration text
+                ctx.fillStyle = 'gold';
+                ctx.font = '40px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(
+                    `Level ${game.level} Complete!`, 
+                    canvas.width/2, 
+                    canvas.height/2
+                );
+            }
         }
 
         function gameLoop() {
@@ -224,6 +331,98 @@
         // Start the game
         loadLevel(1);
         gameLoop();
+
+        // Add level complete overlay
+        function drawLevelComplete() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = 'gold';
+            ctx.font = '40px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText(
+                `Level ${game.level} Complete!`, 
+                canvas.width/2, 
+                canvas.height/2
+            );
+            
+            ctx.font = '25px Arial';
+            ctx.fillText(
+                'Special Prize Collected! +100 Points', 
+                canvas.width/2, 
+                canvas.height/2 + 50
+            );
+        }
+
+        // Add different prizes for each level
+        function getPrizeSpriteForLevel(level) {
+            const prizes = {
+                1: '🍛', // Regular curry
+                2: '👑', // Crown
+                3: '⭐', // Star
+                4: '💎', // Diamond
+                5: '🏆'  // Trophy
+            };
+            return prizes[level] || '🎁'; // Default to gift box for higher levels
+        }
+
+        // Add Firework class
+        class Firework {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.particles = [];
+                this.lifetime = 60; // frames
+                this.colors = ['#ff0000', '#ffd700', '#00ff00', '#0000ff', '#ff00ff'];
+                this.createParticles();
+            }
+
+            createParticles() {
+                for (let i = 0; i < 50; i++) {
+                    const angle = (Math.PI * 2 * i) / 50;
+                    const speed = 2 + Math.random() * 3;
+                    this.particles.push({
+                        x: this.x,
+                        y: this.y,
+                        vx: Math.cos(angle) * speed,
+                        vy: Math.sin(angle) * speed,
+                        color: this.colors[Math.floor(Math.random() * this.colors.length)],
+                        size: 2 + Math.random() * 2
+                    });
+                }
+            }
+
+            update() {
+                this.lifetime--;
+                this.particles.forEach(particle => {
+                    particle.x += particle.vx;
+                    particle.y += particle.vy;
+                    particle.vy += 0.1; // gravity
+                });
+            }
+
+            draw(ctx) {
+                this.particles.forEach(particle => {
+                    ctx.fillStyle = particle.color;
+                    ctx.globalAlpha = this.lifetime / 60;
+                    ctx.beginPath();
+                    ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+                ctx.globalAlpha = 1;
+            }
+        }
+
+        function startFireworksCelebration() {
+            game.showingFireworks = true;
+            game.fireworks = [];
+            // Add initial fireworks
+            for (let i = 0; i < 3; i++) {
+                const x = Math.random() * canvas.width;
+                const y = Math.random() * (canvas.height / 2);
+                game.fireworks.push(new Firework(x, y));
+            }
+        }
     </script>
 </body>
 </html> 
