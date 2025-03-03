@@ -12,14 +12,218 @@
             align-items: center;
             min-height: 100vh;
             background: #87CEEB;
+            font-family: Arial, sans-serif;
         }
         canvas {
             border: 3px solid #333;
+            background: white;
+        }
+        #gameUI {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: white;
+            font-size: 20px;
+            text-shadow: 2px 2px 2px rgba(0,0,0,0.5);
         }
     </style>
 </head>
 <body>
+    <div id="gameUI">
+        Level: <span id="levelDisplay">1</span><br>
+        Score: <span id="scoreDisplay">0</span>
+    </div>
     <canvas id="gameCanvas"></canvas>
-    <script src="game.js"></script>
+    <audio id="cluckSound" src="sounds/cluck.mp3" preload="auto"></audio>
+    <audio id="collectSound" src="sounds/collect.mp3" preload="auto"></audio>
+    <audio id="powerupSound" src="sounds/powerup.mp3" preload="auto"></audio>
+    <audio id="victorySound" src="sounds/victory.mp3" preload="auto"></audio>
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = 800;
+        canvas.height = 400;
+
+        const game = {
+            level: 1,
+            score: 0,
+            chicken: {
+                x: 50,
+                y: canvas.height - 100,
+                width: 40,
+                height: 40,
+                velocityX: 0,
+                velocityY: 0,
+                speed: 5,
+                jumpForce: -12,
+                isJumping: false
+            },
+            platforms: [],
+            curryPieces: [],
+            keys: {
+                right: false,
+                left: false,
+                up: false
+            },
+            cameraOffset: 0
+        };
+
+        function generateLevel(levelNum) {
+            const groundHeight = canvas.height - 40;
+            let platforms = [
+                // Ground
+                { x: 0, y: groundHeight, width: 2400, height: 40 }
+            ];
+
+            // Add platforms based on level
+            for(let i = 0; i < 10; i++) {
+                platforms.push({
+                    x: 300 + i * 200,
+                    y: groundHeight - 100 - Math.random() * 100,
+                    width: 100,
+                    height: 20
+                });
+            }
+
+            // Add curry pieces
+            game.curryPieces = [];
+            platforms.forEach(platform => {
+                if(platform.y < groundHeight) {
+                    game.curryPieces.push({
+                        x: platform.x + platform.width/2,
+                        y: platform.y - 30,
+                        width: 20,
+                        height: 20,
+                        collected: false
+                    });
+                }
+            });
+
+            return platforms;
+        }
+
+        function loadLevel(levelNum) {
+            game.level = levelNum;
+            game.platforms = generateLevel(levelNum);
+            game.chicken.x = 50;
+            game.chicken.y = canvas.height - 100;
+            game.chicken.velocityX = 0;
+            game.chicken.velocityY = 0;
+            game.cameraOffset = 0;
+            document.getElementById('levelDisplay').textContent = levelNum;
+        }
+
+        function checkCollision(rect1, rect2) {
+            return rect1.x < rect2.x + rect2.width &&
+                   rect1.x + rect1.width > rect2.x &&
+                   rect1.y < rect2.y + rect2.height &&
+                   rect1.y + rect1.height > rect2.y;
+        }
+
+        function updateGame() {
+            // Horizontal movement
+            if(game.keys.right) game.chicken.velocityX = game.chicken.speed;
+            else if(game.keys.left) game.chicken.velocityX = -game.chicken.speed;
+            else game.chicken.velocityX = 0;
+
+            // Jumping
+            if(game.keys.up && !game.chicken.isJumping) {
+                game.chicken.velocityY = game.chicken.jumpForce;
+                game.chicken.isJumping = true;
+            }
+
+            // Apply gravity
+            game.chicken.velocityY += 0.5;
+
+            // Update position
+            game.chicken.x += game.chicken.velocityX;
+            game.chicken.y += game.chicken.velocityY;
+
+            // Platform collisions
+            game.platforms.forEach(platform => {
+                if(checkCollision(game.chicken, platform)) {
+                    if(game.chicken.velocityY > 0) {
+                        game.chicken.y = platform.y - game.chicken.height;
+                        game.chicken.velocityY = 0;
+                        game.chicken.isJumping = false;
+                    }
+                }
+            });
+
+            // Collect curry pieces
+            game.curryPieces.forEach(curry => {
+                if(!curry.collected && checkCollision(game.chicken, curry)) {
+                    curry.collected = true;
+                    game.score += 10;
+                    document.getElementById('scoreDisplay').textContent = game.score;
+                }
+            });
+
+            // Update camera
+            game.cameraOffset = -game.chicken.x + canvas.width/3;
+            if(game.cameraOffset > 0) game.cameraOffset = 0;
+
+            // Check for level completion
+            if(game.chicken.x > 2200) {
+                loadLevel(game.level + 1);
+            }
+        }
+
+        function drawGame() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.save();
+            ctx.translate(game.cameraOffset, 0);
+
+            // Draw platforms
+            game.platforms.forEach(platform => {
+                ctx.fillStyle = '#8B4513';
+                ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
+            });
+
+            // Draw curry pieces
+            game.curryPieces.forEach(curry => {
+                if(!curry.collected) {
+                    ctx.fillStyle = '#FFA500';
+                    ctx.fillRect(curry.x, curry.y, curry.width, curry.height);
+                }
+            });
+
+            // Draw chicken
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(game.chicken.x, game.chicken.y, game.chicken.width, game.chicken.height);
+            
+            // Chicken details
+            ctx.fillStyle = '#FF0000';
+            ctx.fillRect(game.chicken.x + 30, game.chicken.y + 5, 5, 5); // Comb
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(game.chicken.x + 25, game.chicken.y + 10, 3, 3); // Eye
+
+            ctx.restore();
+        }
+
+        function gameLoop() {
+            updateGame();
+            drawGame();
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Event listeners
+        document.addEventListener('keydown', (e) => {
+            if(e.key === 'ArrowRight') game.keys.right = true;
+            if(e.key === 'ArrowLeft') game.keys.left = true;
+            if(e.key === 'ArrowUp') game.keys.up = true;
+        });
+
+        document.addEventListener('keyup', (e) => {
+            if(e.key === 'ArrowRight') game.keys.right = false;
+            if(e.key === 'ArrowLeft') game.keys.left = false;
+            if(e.key === 'ArrowUp') game.keys.up = false;
+        });
+
+        // Start the game
+        loadLevel(1);
+        gameLoop();
+    </script>
 </body>
 </html> 
